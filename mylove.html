@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结婚一周年快乐</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 3em;
+            margin-top: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        p {
+            font-size: 1.5em;
+            margin: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .heart {
+            font-size: 4em;
+            color: #ff6b6b;
+            margin: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 1;
+        }
+        /* Fireworks container */
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>张瑞斌 ❤️ 康熹</h1>
+    <p>2023年11月17日</p>
+    <div class="heart">一周年快乐！🎉</div>
+    <p>愿你们的爱如星辰般永恒，生活如蜜般甜美！</p>
+    <div class="fireworks"></div>
+    <footer>Designed with love for your special day</footer>
+    <audio autoplay loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <script>
+        // Fireworks animation
+        class Firework {
+            constructor() {
+                this.canvas = document.createElement('canvas');
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.context = this.canvas.getContext('2d');
+                document.querySelector('.fireworks').appendChild(this.canvas);
+                this.fireworks = [];
+                this.particles = [];
+                this.loop();
+            }
+
+            loop() {
+                requestAnimationFrame(() => this.loop());
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.updateFireworks();
+                this.updateParticles();
+            }
+
+            updateFireworks() {
+                if (Math.random() < 0.05) {
+                    this.fireworks.push(new FireworkInstance(this.canvas.width, this.canvas.height));
+                }
+                this.fireworks.forEach((firework, i) => {
+                    firework.update();
+                    firework.draw(this.context);
+                    if (firework.done) {
+                        this.particles.push(...firework.explode());
+                        this.fireworks.splice(i, 1);
+                    }
+                });
+            }
+
+            updateParticles() {
+                this.particles.forEach((particle, i) => {
+                    particle.update();
+                    particle.draw(this.context);
+                    if (particle.done) {
+                        this.particles.splice(i, 1);
+                    }
+                });
+            }
+        }
+
+        class FireworkInstance {
+            constructor(width, height) {
+                this.x = Math.random() * width;
+                this.y = height;
+                this.targetY = Math.random() * height / 2;
+                this.speed = 3 + Math.random() * 2;
+                this.done = false;
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y < this.targetY) this.done = true;
+            }
+
+            draw(context) {
+                context.beginPath();
+                context.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                context.fillStyle = 'white';
+                context.fill();
+            }
+
+            explode() {
+                const particles = [];
+                for (let i = 0; i < 50; i++) {
+                    particles.push(new Particle(this.x, this.y));
+                }
+                return particles;
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.speedX = (Math.random() - 0.5) * 6;
+                this.speedY = (Math.random() - 0.5) * 6;
+                this.life = 50;
+                this.done = false;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= 1;
+                if (this.life <= 0) this.done = true;
+            }
+
+            draw(context) {
+                context.beginPath();
+                context.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                context.fillStyle = `rgba(255, 255, 255, ${this.life / 50})`;
+                context.fill();
+            }
+        }
+
+        // Initialize fireworks
+        new Firework();
+    </script>
+</body>
+</html>
